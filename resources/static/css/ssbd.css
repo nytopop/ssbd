@@ -1,0 +1,94 @@
+/* Site design
+ * Single main page @ /
+ * Tabs list live feed of server stuff, when selected
+ * Flat ui coloring, make it look 'modern' lmao
+ *
+ * Status tab displays AJAX feed of /status handler
+ * Servers tab displays AJAX feed of /servers handler
+ * Jobs tab display AJAX feed of /jobs handler
+ * History tab displays AJAX feed of /history handler
+ * Admin tab displays AJAX feed of /admin handler
+ *
+ * All responsive'n shit
+ * */
+
+body {
+	font-family: "Lato", sans-serif;
+	background: #E0E0E0;
+	margin: 0 0 0 0;
+}
+
+ul.tab {
+	box-sizing: border-box;
+	margin-top: 0;
+	width: 100%;
+	list-style-type: none;
+	overflow: hidden;
+	border: 0.1em solid #ccc;
+	background-color: #BDBDBD;
+	text-align: center;
+}
+
+/* Float the list items side by side */
+ul.tab li {
+	display: inline;
+}
+
+/* Style the links inside the list items */
+ul.tab li a {
+	display: inline-block;
+	color: black;
+	text-align: center;
+	padding: 1em 1.2em;
+	text-decoration: none;
+	transition: 0.3s;
+	font-size: 16px;
+}
+
+/* Change background color of links on hover */
+ul.tab .inactive:hover {
+	background-color: #9E9E9E;
+}
+
+/* Create an active/current tablink class */
+ul.tab .active {
+	background-color: #616161;
+	color: #ecf0f1;
+}
+
+/* Style the tab content */
+.tabcontent {
+	width: 80%;
+	margin: auto;
+	display: none;
+	-webkit-animation: fadeEffect 0.5s;
+	animation: fadeEffect 0.5s;
+}
+
+/* Style the start tab */
+.starttab {
+	width: 80%;
+	margin: auto;
+	display: block;
+	-webkit-animation: fadeEffect 0.5s;
+	animation: fadeEffect 0.5s;
+}
+
+.tabcontent div {
+	background-color: #ecf0f1;
+	min-height: 3em;
+	margin: 0.6em auto 0.6em auto; 
+	border-width: 0.2em;
+	border-style: inset;
+	border-color: #7f8c8d #7f8c8d #bdc3c7 #bdc3c7;
+}
+
+@-webkit-keyframes fadeEffect {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}

@@ -1,0 +1,59 @@
+{{ define "main/main.html" }}
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset='utf8'/>
+	<meta name='viewport' content='width=device-width, initial-scale=1'/>
+	<link rel='stylesheet' href='/static/css/ssbd.css'/>
+	<script src='/static/js/ssbd.js'></script>
+</head>
+<body>
+	<ul class="tab">
+	  <li><a href="javascript:void(0)" class="tablinks inactive" onclick="openTab(event, 'Status')">Status</a></li>
+	  <li><a href="javascript:void(0)" class="tablinks inactive" onclick="openTab(event, 'Servers')">Servers</a></li>
+	  <li><a href="javascript:void(0)" class="tablinks inactive" onclick="openTab(event, 'Jobs')">Jobs</a></li>
+	  <li><a href="javascript:void(0)" class="tablinks inactive" onclick="openTab(event, 'History')">History</a></li>
+	  <li><a href="javascript:void(0)" class="tablinks inactive" onclick="openTab(event, 'Admin')">Admin</a></li>
+	</ul>
+
+	<div id='Info' class='starttab'>
+		Welcome to ssbd!
+	</div>
+
+	<div id='Status' class='tabcontent'>
+		status
+	</div>
+	<div id='Servers' class='tabcontent'>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+		<div class='server'>
+			WOW I AM A SERVER
+		</div>
+	</div>
+	<div id='Jobs' class='tabcontent'>
+		jobs
+	</div>
+	<div id='History' class='tabcontent'>
+		history
+	</div>
+	<div id='Admin' class='tabcontent'>
+		admin
+	</div>
+</body>
+<footer>
+</footer>
+</html>
+{{ end }}
