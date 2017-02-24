@@ -5,16 +5,19 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/sha512"
+	"net/http"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/nytopop/ssbd/config"
 	"github.com/nytopop/ssbd/controllers"
+	"github.com/nytopop/ssbd/models"
 )
 
 // StartServer starts pouring gin.
-func StartServer() error {
-	gin.SetMode(gin.ReleaseMode)
+func StartServer(db models.Handler) error {
+	//	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	pub := gin.New()
 
 	// Load HTML templates
@@ -43,11 +46,19 @@ func StartServer() error {
 
 	// Routes
 	pub.Static("/static", config.CFG.Srv.ResourceDir+"/static")
-	pub.GET("/auth/sign-in", controllers.AuthSignIn)
-	pub.POST("/auth/sign-in", controllers.AuthTrySignIn)
-	pub.GET("/auth/sign-out", controllers.AuthTrySignOut)
 
-	//users.GET("/", controllers.Home)
+	pub.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/dash/overview")
+	})
+
+	pub.GET("/auth/sign-in", controllers.AuthSignIn())
+	pub.POST("/auth/sign-in", controllers.AuthTrySignIn(db))
+	pub.GET("/auth/sign-out", controllers.AuthTrySignOut())
+
+	// TODO : switch the following to the users group
+
+	// Dashboard
+	pub.GET("/dash/overview", controllers.DashOverview(db))
 
 	// Add, delete, modify servers
 	//users.GET("/servers", controllers.Servers)

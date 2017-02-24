@@ -1,7 +1,58 @@
+/* Layout
+ * 2  4    14
+ *|  |    |              |
+ *|  |    |              |
+ *|  |    |              |
+ *|  |    |              |
+ *|  |    |              |
+ *|  |    |              |
+ *|  |    |              |
+ *
+ * */
+
+/* Specs
+ *
+ * 1/3
+ *   background: grey 900
+ *   active: grey 100
+ *   inactive: grey 500
+ *
+ * 2/3
+ *   background: grey 300
+ *   active: grey 900 + some extra darkness
+ *   active background: grey 200
+ *   inactive: grey 500
+ *   h1 name, h3 description, <hr>
+ *
+ * 3/3
+ *   background: grey 100
+ *   content
+ * */
+
+/* Content
+ * 
+ * 1/3:
+ *   Dashboard [/dashboard]
+ *   Servers   [/servers]
+ *   Jobs      [/jobs]
+ *   Endpoints [/endpoints]
+ *   Admin     [/admin]
+ * 
+ * 2/3:
+ *   Dashboard
+ *     Overview [/dashboard/overview]
+ *     History  [/dashboard/history]
+ *   Servers
+ *     List    [/servers/list]
+ *     
+ * 3/3:
+ *   Dashboard [/dashboard/history]
+ *
+ * */
+
 /* Site design
  * Single main page @ /
  * Tabs list live feed of server stuff, when selected
- * Flat ui coloring, make it look 'modern' lmao
  *
  * Status tab displays AJAX feed of /status handler
  * Servers tab displays AJAX feed of /servers handler
@@ -9,86 +60,50 @@
  * History tab displays AJAX feed of /history handler
  * Admin tab displays AJAX feed of /admin handler
  *
- * All responsive'n shit
  * */
 
 body {
 	font-family: "Lato", sans-serif;
-	background: #E0E0E0;
-	margin: 0 0 0 0;
 }
 
-ul.tab {
-	box-sizing: border-box;
-	margin-top: 0;
-	width: 100%;
-	list-style-type: none;
-	overflow: hidden;
-	border: 0.1em solid #ccc;
-	background-color: #BDBDBD;
-	text-align: center;
+.container, html, body {
+	height: 100%;
+	margin: 0;
 }
 
-/* Float the list items side by side */
-ul.tab li {
-	display: inline;
+.container {
+	display: flex;
 }
 
-/* Style the links inside the list items */
-ul.tab li a {
-	display: inline-block;
-	color: black;
-	text-align: center;
-	padding: 1em 1.2em;
-	text-decoration: none;
-	transition: 0.3s;
-	font-size: 16px;
+.menu {
+	background: #212121;
+	height: 100%;
+	order: 0;
+	flex: 1 10%;
 }
 
-/* Change background color of links on hover */
-ul.tab .inactive:hover {
-	background-color: #9E9E9E;
+.menu ul {
 }
 
-/* Create an active/current tablink class */
-ul.tab .active {
-	background-color: #616161;
-	color: #ecf0f1;
+.menu svg {
+	fill: #9E9E9E;
 }
 
-/* Style the tab content */
-.tabcontent {
-	width: 80%;
-	margin: auto;
-	display: none;
-	-webkit-animation: fadeEffect 0.5s;
-	animation: fadeEffect 0.5s;
+.menu svg:hover {
+	fill: #F5F5F5;
 }
 
-/* Style the start tab */
-.starttab {
-	width: 80%;
-	margin: auto;
-	display: block;
-	-webkit-animation: fadeEffect 0.5s;
-	animation: fadeEffect 0.5s;
+.submenu {
+	background: #EEEEEE;
+	height: 100%;
+	padding: 2em 1em 2em 1em;
+	order: 1;
+	flex: 1 20%;
 }
 
-.tabcontent div {
-	background-color: #ecf0f1;
-	min-height: 3em;
-	margin: 0.6em auto 0.6em auto; 
-	border-width: 0.2em;
-	border-style: inset;
-	border-color: #7f8c8d #7f8c8d #bdc3c7 #bdc3c7;
-}
-
-@-webkit-keyframes fadeEffect {
-	from {opacity: 0;}
-	to {opacity: 1;}
-}
-
-@keyframes fadeEffect {
-	from {opacity: 0;}
-	to {opacity: 1;}
+.content {
+	background: #F5F5F5;
+	height: 100%;
+	order: 2;
+	flex: 1 70%;
 }

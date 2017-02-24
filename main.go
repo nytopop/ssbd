@@ -42,10 +42,11 @@ func main() {
 	}
 
 	// Initialize database
-	err = models.InitDB()
+	db, err := models.NewClient()
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer db.Close()
 
 	// Start job scheduler
 	err = jobs.StartScheduler()
@@ -54,11 +55,11 @@ func main() {
 	}
 
 	/****************************/
-	testingBacks()
+	// testingBacks()
 	/****************************/
 
 	// Start HTTP handlers : THIS WILL BLOCK UNTIL EXIT
-	err = web.StartServer()
+	err = web.StartServer(db)
 	if err != nil {
 		log.Fatalln(err)
 	}

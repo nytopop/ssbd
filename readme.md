@@ -61,7 +61,5 @@ ssbd boasts an advanced job scheduler, maximizing performance and reliability of
 - .tar.gz      compress, no encrypt
 - .tar.gz.aes  compress, encrypt
 
-- for full backup, index tree and download/tar it
-
 - Mount tar as directory to examine files
 - mount several and use rsync library 

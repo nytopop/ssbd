@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/nytopop/ssbd/models"
 )
 
 // AuthCheckpoint checks cookies to see if user is signed in. If they are,
@@ -29,25 +30,31 @@ func AuthSignedIn() gin.HandlerFunc {
 		// if userid exists in the current context, we are already signed in
 		_, exists := c.Get("userid")
 		if !exists {
-			c.Redirect(302, "/auth/sign-in")
+			c.Redirect(http.StatusFound, "/auth/sign-in")
 		}
 	}
 }
 
 // AuthSignIn serves the sign in page HTML.
 // GET /auth/sign-in
-func AuthSignIn(c *gin.Context) {
-	c.HTML(http.StatusOK, "main/main.html", gin.H{})
+func AuthSignIn() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.HTML(http.StatusOK, "main/main.html", gin.H{})
+	}
 }
 
 // TryAuthSignIn attempts to sign in a user by reading data from the POST
 // form and setting session cookies corresponding to a user in the database.
 // POST /auth/sign-in
-func AuthTrySignIn(c *gin.Context) {
+func AuthTrySignIn(db models.Handler) gin.HandlerFunc {
+	return func(c *gin.Context) {
+	}
 }
 
 // TryAuthSignOut attempts to sign out the current user by clearing any
 // session cookies, and deleting the session itself.
 // GET /auth/sign-out
-func AuthTrySignOut(c *gin.Context) {
+func AuthTrySignOut() gin.HandlerFunc {
+	return func(c *gin.Context) {
+	}
 }
