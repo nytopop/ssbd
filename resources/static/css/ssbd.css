@@ -50,20 +50,8 @@
  *
  * */
 
-/* Site design
- * Single main page @ /
- * Tabs list live feed of server stuff, when selected
- *
- * Status tab displays AJAX feed of /status handler
- * Servers tab displays AJAX feed of /servers handler
- * Jobs tab display AJAX feed of /jobs handler
- * History tab displays AJAX feed of /history handler
- * Admin tab displays AJAX feed of /admin handler
- *
- * */
-
 body {
-	font-family: "Lato", sans-serif;
+	font-family: "Arial", sans-serif;
 }
 
 .container, html, body {
@@ -73,37 +61,104 @@ body {
 
 .container {
 	display: flex;
+	-webkit-animation: fadeEffect 0.7s;
+	animation: fadeEffect 0.7s;
 }
 
+@-webkit-keyframes fadeEffect {
+	from {opacity: 0.6;}
+	to {opacity: 1;}
+}
+
+@keyframes fadeEffect {
+	from {opacity: 0.6;}
+	to {opacity: 1;}
+}
+
+/* Menu : column 1
+ * */
 .menu {
 	background: #212121;
-	height: 100%;
+	padding: 2% 0 0 0;
 	order: 0;
-	flex: 1 10%;
+	flex: 1 8.4%;
 }
 
 .menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
 }
 
-.menu svg {
-	fill: #9E9E9E;
+.menu li a {
+	display: block;
+	padding: 15% 0 15% 0;
 }
 
-.menu svg:hover {
+.menu li svg {
+	fill: #757575;
+	width: 35%;
+}
+
+.menu .current svg {
 	fill: #F5F5F5;
 }
 
-.submenu {
-	background: #EEEEEE;
-	height: 100%;
-	padding: 2em 1em 2em 1em;
-	order: 1;
-	flex: 1 20%;
+.menu li:hover svg {
+	fill: #F5F5F5;
 }
 
+/* Submenu : column 2
+ * */
+.submenu {
+	background: #EEEEEE;
+	padding: 2em 1em 2em 1em;
+	order: 1;
+	flex: 1 21.6%;
+}
+
+.submenu h2 {
+	color: #212121;
+}
+
+.submenu h3 {
+	color: #757575;
+	font-size: 100%;
+}
+
+.submenu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.submenu li {
+	padding: 0.2em 0 0.2em 0;
+}
+
+.submenu li a {
+	display: block;
+	color: #212121;
+
+	font-size: 140%;
+	text-decoration: none;
+}
+
+.submenu li:hover {
+	background: #FAFAFA;
+}
+
+.submenu .current {
+	background: #FAFAFA
+}
+
+/* Content : column 3
+ * */
 .content {
 	background: #F5F5F5;
-	height: 100%;
+	padding: 1em 2em 1em 2em;
 	order: 2;
 	flex: 1 70%;
 }

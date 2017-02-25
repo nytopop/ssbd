@@ -7,9 +7,9 @@ import (
 	"github.com/nytopop/ssbd/models"
 )
 
-// GET /servers/list
-func ServersList(db models.Handler) gin.HandlerFunc {
+// GET /jobs/list
+func JobsList(db models.Handler) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.HTML(http.StatusOK, "servers/list.html", gin.H{})
+		c.HTML(http.StatusOK, "jobs/list.html", gin.H{})
 	}
 }

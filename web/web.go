@@ -59,14 +59,17 @@ func StartServer(db models.Handler) error {
 
 	// Dashboard
 	pub.GET("/dash/overview", controllers.DashOverview(db))
+	pub.GET("/dash/history", controllers.DashHistory(db))
 
 	// Add, delete, modify servers
+	pub.GET("/servers/list", controllers.ServersList(db))
 	//users.GET("/servers", controllers.Servers)
 	//users.GET("/servers/add", controllers.ServersAdd)
 	//users.POST("/servers/add", controllers.ServersTryAdd)
 	//users.GET("/servers/del/:serverid", controllers.ServersTryDel)
 
 	// Add, delete, modify backup jobs
+	pub.GET("/jobs/list", controllers.JobsList(db))
 	//users.GET("/jobs", controllers.Jobs)
 	//users.GET("/jobs/queue", controllers.JobsQueue)
 	//users.GET("/jobs/add", controllers.JobsAdd)
