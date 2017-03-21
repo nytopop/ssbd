@@ -1,15 +1,3 @@
-/* Layout
- * 2  4    14
- *|  |    |              |
- *|  |    |              |
- *|  |    |              |
- *|  |    |              |
- *|  |    |              |
- *|  |    |              |
- *|  |    |              |
- *
- * */
-
 /* Specs
  *
  * 1/3
@@ -40,10 +28,17 @@
  * 
  * 2/3:
  *   Dashboard
- *     Overview [/dashboard/overview]
- *     History  [/dashboard/history]
+ *     Overview [/dash/overview]
+ *     History  [/dash/history]
  *   Servers
- *     List    [/servers/list]
+ *     All Servers [/servers/all]
+ *   Jobs
+ *     All Jobs    [/jobs/all]
+ *   Restore
+ *     Browse Files [/restore/browse]
+ *     Restore Full [/restore/revert]
+ *   Admin
+ *     Users [/admin/users]
  *     
  * 3/3:
  *   Dashboard [/dashboard/history]
@@ -61,15 +56,19 @@ body {
 
 .container {
 	display: flex;
-	-webkit-animation: fadeEffect 0.7s;
 	animation: fadeEffect 0.7s;
+	-webkit-animation: fadeEffect 0.7s;
+	-moz-animation: fadeEffect 0.7s;
 }
 
 @-webkit-keyframes fadeEffect {
 	from {opacity: 0.6;}
 	to {opacity: 1;}
 }
-
+@-moz-keyframes fadeEffect {
+	from {opacity: 0.6;}
+	to {opacity: 1;}
+}
 @keyframes fadeEffect {
 	from {opacity: 0.6;}
 	to {opacity: 1;}
@@ -116,6 +115,8 @@ body {
 	padding: 2em 1em 2em 1em;
 	order: 1;
 	flex: 1 21.6%;
+	overflow: hidden;
+	overflow-y: scroll;
 }
 
 .submenu h2 {
@@ -161,4 +162,75 @@ body {
 	padding: 1em 2em 1em 2em;
 	order: 2;
 	flex: 1 70%;
+
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+.content button {
+	float: right;
+	display: inline-block;
+	background-color: #212121;
+	color: #AAAAAA;
+	border: none;
+	text-align: center;
+	text-decoration: none;
+	margin: -1em 0em 0em 1em;
+	height: 2em;
+	font-size: 16px;
+}
+
+.content ul {
+	list-style-type: none;
+	padding: 1em;
+
+	animation-timing-function: ease-out;
+	animation: slideEffect 0.5s;
+	-webkit-animation: slideEffect 0.5s;
+	-moz-animation: slideEffect 0.5s;
+}
+
+@-webkit-keyframes slideEffect {
+	0% {transform: translateY(100%);}
+	100% {transform: translateY(0%);}
+}
+@-moz-keyframes slideEffect {
+	0% {transform: translateY(100%);}
+	100% {transform: translateY(0%);}
+}
+@keyframes slideEffect {
+	0% {transform: translateY(100%);}
+	100% {transform: translateY(0%);}
+}
+
+.content li {
+	background: #EEEEEE;
+	margin: 0.5em 0em 0.5em 0em;
+	padding: 0.5em 0em 0.5em 0em;
+	border: 1.5px solid #AAAAAA;
+
+	animation-timing-function: ease-out;
+	animation: gapEffect 1s;
+	-webkit-animation: gapEffect 1s;
+	-moz-animation: gapEffect 1s;
+}
+
+@-webkit-keyframes gapEffect {
+	0% {margin: 5em 0em 5em 0em;}
+	100% {margin: 0.5em 0em 0.5em 0em;}
+}
+@-moz-keyframes gapEffect {
+	0% {margin: 5em 0em 5em 0em;}
+	100% {margin: 0.5em 0em 0.5em 0em;}
+}
+@keyframes gapEffect {
+	0% {margin: 5em 0em 5em 0em;}
+	100% {margin: 0.5em 0em 0.5em 0em;}
+}
+
+.content li a {
+	display: block;
+	text-decoration: none;
+	color: #404040;
+	padding: 0em 0.5em 0em 0.5em;
 }

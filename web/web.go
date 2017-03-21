@@ -16,8 +16,8 @@ import (
 
 // StartServer starts pouring gin.
 func StartServer(db models.Handler) error {
-	//	gin.SetMode(gin.ReleaseMode)
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.DebugMode)
 	pub := gin.New()
 
 	// Load HTML templates

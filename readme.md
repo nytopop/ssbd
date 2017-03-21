@@ -28,34 +28,9 @@ ssbd boasts an advanced job scheduler, maximizing performance and reliability of
 - [ ] Cloud integration
 - [ ] Automatic TLS certs; self-signed and let's encrypt
 
-## Web interface endpoints
-### /servers
-- [ ] GET /servers
-- [ ] GET /servers/add
-- [ ] POST /servers/add
-- [ ] GET /servers/del/:serverid
+## Feature Creep List
+- [ ] Storage volume support for obj storage [ceph, swift, etc], S3, dbox
 
-### /jobs
-- [ ] GET /jobs
-- [ ] GET /jobs/queue
-- [ ] GET /jobs/add
-- [ ] POST /jobs/add
-- [ ] GET /jobs/del/:jobid
-
-### /history
-- [ ] GET /history/:page
-- [ ] GET /history/:jobid
-
-### /browse
-- [ ] GET /browse/:jobid
-
-### /admin
-- [ ] GET /admin
-- [ ] GET /admin/users
-- [ ] POST /admin/users/add
-- [ ] GET /admin/users/del/:userid
-
-##
 - .tar         no compress, no encrypt
 - .tar.aes     no compress, encrypt
 - .tar.gz      compress, no encrypt
