@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS servers (
     serverid INTEGER PRIMARY KEY ASC AUTOINCREMENT
                      NOT NULL
                      UNIQUE,
+    name     TEXT    NOT NULL
+                     UNIQUE,
     address  TEXT    NOT NULL,
     port     INTEGER NOT NULL
 );

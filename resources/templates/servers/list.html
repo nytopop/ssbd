@@ -39,24 +39,19 @@
 		<hr>
 		<ul>
 			<li class="current"><a href="/servers/list">List</a></li>
+			<li><a href="/servers/add">New Server</a></li>
 		</ul>
 	</div>
 
 	<div class="content">
 		<h1> List </h1>
-		<form>
-			<button formaction="">Add Server</button>
-		</form>
 		<hr>
 		<ul>
-			<li> <a href=""> Server #1 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
-			<li> <a href=""> Server #2 </a> </li>
+			{{ range $k, $v := .Servers }}
+			<li><a href="/servers/view/{{ $v.ServerID }}"> 
+			{{ $v.Name }} | {{ $v.Address }}:{{ $v.Port }}
+			</a></li>
+			{{ end }}
 		</ul>
 	</div>
 	</div>
