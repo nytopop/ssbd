@@ -68,6 +68,11 @@ func StartServer(db models.Handler) error {
 	//users.POST("/servers/add", controllers.ServersTryAdd)
 	//users.GET("/servers/del/:serverid", controllers.ServersTryDel)
 
+	// Add, delete, modify storage volumes
+	pub.GET("/volumes/list", controllers.VolumesList(db))
+	pub.GET("/volumes/add", controllers.VolumesAdd())
+	pub.POST("/volumes/add", controllers.TryVolumesAdd(db))
+
 	// Add, delete, modify backup jobs
 	pub.GET("/jobs/list", controllers.JobsList(db))
 	//users.GET("/jobs", controllers.Jobs)

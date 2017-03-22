@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -35,4 +36,12 @@ func Logger() gin.HandlerFunc {
 				clientIP, path, errors)
 		}
 	}
+}
+
+// RenderErr renders the error page with provided error value.
+func RenderErr(c *gin.Context, err error) {
+	c.Error(err)
+	c.HTML(http.StatusInternalServerError, "misc/error.html", gin.H{
+		"Err": err,
+	})
 }

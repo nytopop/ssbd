@@ -30,11 +30,4 @@ ssbd boasts an advanced job scheduler, maximizing performance and reliability of
 
 ## Feature Creep List
 - [ ] Storage volume support for obj storage [ceph, swift, etc], S3, dbox
-
-- .tar         no compress, no encrypt
-- .tar.aes     no compress, encrypt
-- .tar.gz      compress, no encrypt
-- .tar.gz.aes  compress, encrypt
-
-- Mount tar as directory to examine files
-- mount several and use rsync library 
+- [ ]

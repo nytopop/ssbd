@@ -6,11 +6,32 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/nytopop/ssbd/config"
+	"github.com/nytopop/ssbd/logs"
+)
+
+const (
+	ErrQueryFailed = logs.Err("Query failed to execute.")
+	ErrScan        = logs.Err("Failed to scan query rows.")
+	ErrNotFound    = logs.Err("Query not found.")
+	ErrConFail     = logs.Err("DB connection failed.")
 )
 
 type Handler interface {
-	// Users
-	//	GetUsers() []models.User
+	// Volumes
+	GetVolumes() ([]Volume, error)
+	InsertVolume(v Volume) error
+	UpdateVolume(v Volume) error
+
+	// Servers
+	GetServers() ([]Server, error) // TODO
+	InsertServer(s Server) error   // TODO
+	UpdateServer(s Server) error   // TODO
+
+	// Jobs
+	//GetJobs() ([]Job, error) // TODO
+	//InsertJob(j Job) error   // TODO
+	//UpdateJob(j Job) error   // TODO
+
 	Close() error
 }
 

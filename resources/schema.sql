@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS servers (
                      NOT NULL
                      UNIQUE,
     address  TEXT    NOT NULL,
-	username TEXT    NOT NULL
+    port     INTEGER NOT NULL
 );
 
 -- Table: jobs
@@ -55,6 +55,21 @@ CREATE TABLE IF NOT EXISTS users (
                      UNIQUE,
     salt     TEXT    NOT NULL,
     token    TEXT    NOT NULL
+);
+
+--Table: volumes
+CREATE TABLE IF NOT EXISTS volumes (
+    volumeid INTEGER PRIMARY KEY ASC AUTOINCREMENT
+                     NOT NULL
+                     UNIQUE,
+    name     TEXT    NOT NULL
+                     UNIQUE,
+    backend  TEXT    NOT NULL,
+    authuser TEXT    NOT NULL,
+    authpw   TEXT    NOT NULL,
+    capacity INTEGER NOT NULL,
+    free     INTEGER NOT NULL,
+    used     INTEGER NOT NULL
 );
 
 COMMIT TRANSACTION;

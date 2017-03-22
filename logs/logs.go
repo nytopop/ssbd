@@ -46,3 +46,8 @@ func Error(err ...interface{}) {
 func Access(err ...interface{}) {
 	logger.A.Println(err...)
 }
+
+// App wide Err type.
+type Err string
+
+func (e Err) Error() string { return string(e) }
