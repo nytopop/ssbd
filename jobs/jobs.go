@@ -61,7 +61,3 @@ func (s Scheduler) Rescan() error {
 func (s Scheduler) Status() string {
 	return ""
 }
-
-// Job represents a single scheduled job.
-type Job struct {
-}

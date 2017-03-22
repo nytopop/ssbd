@@ -28,9 +28,16 @@ type Handler interface {
 	UpdateServer(s Server) error
 
 	// Jobs
-	//GetJobs() ([]Job, error) // TODO
-	//InsertJob(j Job) error   // TODO
-	//UpdateJob(j Job) error   // TODO
+	GetJobs() ([]Job, error)
+	InsertJob(j Job) error
+	UpdateJob(j Job) error
+
+	// RunHistory
+	GetRuns() ([]Run, error)
+	InsertRun(r Run) error
+	UpdateRun(r Run) error
+
+	// ActionHistory
 
 	Close() error
 }

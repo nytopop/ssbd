@@ -26,17 +26,19 @@ CREATE TABLE IF NOT EXISTS jobs (
                       ON DELETE CASCADE
                       NOT NULL,
     directory TEXT    NOT NULL,
+    squash    BOOLEAN NOT NULL,
     encrypt   BOOLEAN NOT NULL,
     key       TEXT    NOT NULL
 );
 
--- Table: runhistory
-CREATE TABLE IF NOT EXISTS runhistory (
-    runid INTEGER PRIMARY KEY ASC AUTOINCREMENT
-                  NOT NULL
-                  UNIQUE,
-    jobid INTEGER REFERENCES jobs (jobid)
-                  ON DELETE SET NULL
+-- Table: runs
+CREATE TABLE IF NOT EXISTS runs (
+    runid  INTEGER PRIMARY KEY ASC AUTOINCREMENT
+                   NOT NULL
+                   UNIQUE,
+    jobid  INTEGER REFERENCES jobs (jobid)
+                   ON DELETE SET NULL,
+    status INTEGER NOT NULL
 );
 
 -- Table: actionhistory

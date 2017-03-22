@@ -7,7 +7,7 @@ type Server struct {
 	Port     int
 }
 
-// GetServers returns all servers.
+// GetServers returns all Servers.
 func (c *Client) GetServers() ([]Server, error) {
 	s := `select * from servers order by serverid asc`
 

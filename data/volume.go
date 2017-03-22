@@ -31,12 +31,12 @@ type FileDir string
 func OpenFileDir(dir string) (FileDir, error) {
 	info, err := os.Stat(dir)
 	switch {
-	case info.IsDir() == true:
-		return FileDir(dir), ErrNotDir
 	case os.IsNotExist(err):
 		return FileDir(dir), ErrNotExist
 	case os.IsPermission(err):
 		return FileDir(dir), ErrPermission
+	case info.IsDir() == true:
+		return FileDir(dir), ErrNotDir
 	}
 
 	return FileDir(dir), err
