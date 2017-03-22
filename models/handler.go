@@ -23,9 +23,9 @@ type Handler interface {
 	UpdateVolume(v Volume) error
 
 	// Servers
-	GetServers() ([]Server, error) // TODO
-	InsertServer(s Server) error   // TODO
-	UpdateServer(s Server) error   // TODO
+	GetServers() ([]Server, error)
+	InsertServer(s Server) error
+	UpdateServer(s Server) error
 
 	// Jobs
 	//GetJobs() ([]Job, error) // TODO

@@ -23,11 +23,14 @@ ssbd boasts an advanced job scheduler, maximizing performance and reliability of
 - Rest easy.
 
 ## TODO
+- [ ] volumes logic, forms/validation
+- [ ] servers logic, forms/validation
+
 - [ ] Job queuer
-- [ ] Web interface
 - [ ] Cloud integration
 - [ ] Automatic TLS certs; self-signed and let's encrypt
 
 ## Feature Creep List
 - [ ] Storage volume support for obj storage [ceph, swift, etc], S3, dbox
-- [ ]
+- [ ] API endpoint that builds an auto-configuring binary for a persistent
+      client connection

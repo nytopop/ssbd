@@ -6,14 +6,20 @@ import (
 	"sync"
 )
 
-/* This module provides job scheduling and execution.
+/*
 
-Interops with ssbd/data and jobs table in database.
-
-Need:
-Force rescan database for new jobs, otherwise scheduled rescan.
-
-
+scheduler starts a backup job
+ scheduler should have
+   Volume, VolumeHandler,
+   Server, ServerHandler,
+   Job
+ hash Job.JobID + Server.Name + Volume.Name
+   this gives us directory name
+ fulltar requires
+   .tar/.idx volume allocated io.Writer
+ difftar requires
+   .tar/.idx io.Writer
+   .idx io.Reader from last full backup
 */
 
 var scheduler Scheduler
