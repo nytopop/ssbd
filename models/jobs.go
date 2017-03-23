@@ -1,8 +1,16 @@
 package models
 
+const (
+	Full = iota
+	Diff
+)
+
 type Job struct {
 	JobID     int64
 	ServerID  int64
+	VolumeID  int64
+	Style     int
+	Cron      string
 	Directory string
 	Squash    bool
 	Encrypt   bool
@@ -28,6 +36,9 @@ func (c *Client) GetJobs() ([]Job, error) {
 		err = rows.Scan(
 			&job.JobID,
 			&job.ServerID,
+			&job.VolumeID,
+			&job.Style,
+			&job.Cron,
 			&job.Directory,
 			&job.Squash,
 			&job.Encrypt,
@@ -43,10 +54,13 @@ func (c *Client) GetJobs() ([]Job, error) {
 
 // InsertJob inserts Job j.
 func (c *Client) InsertJob(j Job) error {
-	s := `insert into jobs values (?, ?, ?, ?, ?, ?)`
+	s := `insert into jobs values (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	_, err := c.DB.Exec(s, nil,
 		j.ServerID,
+		j.VolumeID,
+		j.Style,
+		j.Cron,
 		j.Directory,
 		j.Squash,
 		j.Encrypt,
@@ -58,11 +72,14 @@ func (c *Client) InsertJob(j Job) error {
 // UpdateJob updates a Job j identified by j.JobID.
 func (c *Client) UpdateJob(j Job) error {
 	s := `update jobs
-	set serverid=?,directory=?,squash=?,encrypt=?,key=?
+	set serverid=?,volumeid=?,style=?,cron=?directory=?,squash=?,encrypt=?,key=?
 	where jobid=?`
 
 	_, err := c.DB.Exec(s,
 		j.ServerID,
+		j.VolumeID,
+		j.Style,
+		j.Cron,
 		j.Directory,
 		j.Squash,
 		j.Encrypt,

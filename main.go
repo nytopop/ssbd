@@ -10,7 +10,6 @@ import (
 
 	"github.com/nytopop/ssbd/config"
 	"github.com/nytopop/ssbd/data"
-	"github.com/nytopop/ssbd/jobs"
 	"github.com/nytopop/ssbd/logs"
 	"github.com/nytopop/ssbd/models"
 	"github.com/nytopop/ssbd/web"
@@ -49,10 +48,9 @@ func main() {
 	defer db.Close()
 
 	// Start job scheduler
-	err = jobs.StartScheduler()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	s := data.NewScheduler(db)
+	go s.Run()
+	defer s.Close()
 
 	/****************************/
 	// testingBacks()

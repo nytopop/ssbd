@@ -7,6 +7,7 @@ import (
 	"crypto/sha512"
 	"net/http"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/nytopop/ssbd/config"
@@ -36,6 +37,7 @@ func StartServer(db models.Handler) error {
 	store := sessions.NewCookieStore(auth[:], enc[:])
 
 	// Misc Middleware
+	pub.Use(gzip.Gzip(gzip.DefaultCompression))
 	pub.Use(controllers.Logger())
 	pub.Use(gin.Recovery())
 	pub.Use(sessions.Sessions("ssbd", store))

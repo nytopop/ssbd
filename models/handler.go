@@ -34,7 +34,8 @@ type Handler interface {
 
 	// RunHistory
 	GetRuns() ([]Run, error)
-	InsertRun(r Run) error
+	GetLastFullRunID(sid int64, dir string) (int64, error)
+	InsertRun(r Run) (int64, error)
 	UpdateRun(r Run) error
 
 	// ActionHistory

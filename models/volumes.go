@@ -1,9 +1,16 @@
 package models
 
+const (
+	FileDir = iota
+	SSH
+	AWS
+	RBD
+)
+
 type Volume struct {
 	VolumeID int64
 	Name     string
-	Backend  string
+	Backend  int
 	AuthUser string
 	AuthPW   string
 	Capacity int64

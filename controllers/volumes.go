@@ -1,7 +1,9 @@
 package controllers
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,14 +26,14 @@ func VolumesList(db models.Handler) gin.HandlerFunc {
 			return
 		}
 
-		name := make([]byte, 64)
-		for i := range name {
-			name[i] = byte(rand.Intn(150))
-		}
+		name := make([]byte, 32)
+		rand.Read(name)
+		sum := sha256.Sum256(name)
+		hash := base64.StdEncoding.EncodeToString(sum[:])
 
 		err = db.InsertVolume(models.Volume{
-			Name:    string(name),
-			Backend: "one true backend",
+			Name:    hash,
+			Backend: 0,
 		})
 		if err != nil {
 			RenderErr(c, err)

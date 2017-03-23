@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS jobs (
     serverid  INTEGER REFERENCES servers (serverid)
                       ON DELETE CASCADE
                       NOT NULL,
+    volumeid  INTEGER REFERENCES volumes (volumeid)
+                      NOT NUll,
+    style     INTEGER NOT NULL,
+    cron      TEXT    NOT NULL,
     directory TEXT    NOT NULL,
     squash    BOOLEAN NOT NULL,
     encrypt   BOOLEAN NOT NULL,
@@ -68,7 +72,7 @@ CREATE TABLE IF NOT EXISTS volumes (
                      UNIQUE,
     name     TEXT    NOT NULL
                      UNIQUE,
-    backend  TEXT    NOT NULL,
+    backend  INTEGER NOT NULL,
     authuser TEXT    NOT NULL,
     authpw   TEXT    NOT NULL,
     capacity INTEGER NOT NULL,
