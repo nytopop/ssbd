@@ -1,8 +1,9 @@
-package data
+package vol
 
 import (
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/nytopop/ssbd/logs"
 )
@@ -14,8 +15,6 @@ const (
 	ErrWriteHandle = logs.Err("Error opening a write handle.")
 	ErrReadHandle  = logs.Err("Error opening a read handle.")
 	ErrUnknownV    = logs.Err("Error handle type unknown.")
-	Tar            = iota
-	Idx
 )
 
 type FileDir string
@@ -35,8 +34,9 @@ func OpenFileDir(dir string) (FileDir, error) {
 }
 
 func (d FileDir) GetW(id int64, v int) (io.WriteCloser, error) {
-	path := string(d) + string(id)
-	err := os.MkdirAll(path, os.ModeDir)
+	// BUG TODO : don't use string concat >:|
+	path := string(d) + "/" + strconv.Itoa(int(id))
+	err := os.MkdirAll(path, os.ModeDir|0777)
 	if err != nil {
 		return nil, err
 	}
@@ -64,9 +64,13 @@ func (d FileDir) GetR(id int64, v int) (io.ReadCloser, error) {
 	return nil, nil
 }
 
-func (d FileDir) Close() {
-}
-
 func (d FileDir) GetStats() VolStats {
 	return VolStats{}
+}
+
+func (d FileDir) Ping() error {
+	return nil
+}
+
+func (d FileDir) Close() {
 }

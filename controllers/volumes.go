@@ -31,7 +31,7 @@ func VolumesList(db models.Handler) gin.HandlerFunc {
 		sum := sha256.Sum256(name)
 		hash := base64.StdEncoding.EncodeToString(sum[:])
 
-		err = db.InsertVolume(models.Volume{
+		_, err = db.InsertVolume(models.Volume{
 			Name:    hash,
 			Backend: 0,
 		})

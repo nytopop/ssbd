@@ -1,6 +1,7 @@
 package models
 
 const (
+	// todo FileDir-->VolFileDir
 	FileDir = iota
 	SSH
 	AWS
@@ -24,7 +25,7 @@ func (c *Client) GetVolumes() ([]Volume, error) {
 
 	rows, err := c.DB.Query(s)
 	if err != nil {
-		return []Volume{}, ErrQueryFailed
+		return []Volume{}, err
 	}
 	defer rows.Close()
 
@@ -41,7 +42,7 @@ func (c *Client) GetVolumes() ([]Volume, error) {
 			&v.Free,
 			&v.Used)
 		if err != nil {
-			return []Volume{}, ErrScan
+			return []Volume{}, err
 		}
 		vols = append(vols, v)
 	}
@@ -50,10 +51,10 @@ func (c *Client) GetVolumes() ([]Volume, error) {
 }
 
 // InsertVolume inserts a new volume v.
-func (c *Client) InsertVolume(v Volume) error {
+func (c *Client) InsertVolume(v Volume) (int64, error) {
 	s := `insert into volumes values (?, ?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := c.DB.Exec(s,
+	res, err := c.DB.Exec(s,
 		nil,
 		v.Name,
 		v.Backend,
@@ -62,8 +63,11 @@ func (c *Client) InsertVolume(v Volume) error {
 		v.Capacity,
 		v.Free,
 		v.Used)
+	if err != nil {
+		return 0, err
+	}
 
-	return err
+	return res.LastInsertId()
 }
 
 // UpdateVolume updates a volume v identified by v.VolumeID.

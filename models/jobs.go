@@ -26,7 +26,7 @@ func (c *Client) GetJobs() ([]Job, error) {
 
 	rows, err := c.DB.Query(s)
 	if err != nil {
-		return []Job{}, ErrQueryFailed
+		return []Job{}, err
 	}
 	defer rows.Close()
 
@@ -44,7 +44,7 @@ func (c *Client) GetJobs() ([]Job, error) {
 			&job.Encrypt,
 			&job.Key)
 		if err != nil {
-			return []Job{}, ErrScan
+			return []Job{}, err
 		}
 		jobs = append(jobs, job)
 	}
@@ -53,10 +53,10 @@ func (c *Client) GetJobs() ([]Job, error) {
 }
 
 // InsertJob inserts Job j.
-func (c *Client) InsertJob(j Job) error {
+func (c *Client) InsertJob(j Job) (int64, error) {
 	s := `insert into jobs values (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := c.DB.Exec(s, nil,
+	res, err := c.DB.Exec(s, nil,
 		j.ServerID,
 		j.VolumeID,
 		j.Style,
@@ -65,8 +65,11 @@ func (c *Client) InsertJob(j Job) error {
 		j.Squash,
 		j.Encrypt,
 		j.Key)
+	if err != nil {
+		return 0, err
+	}
 
-	return err
+	return res.LastInsertId()
 }
 
 // UpdateJob updates a Job j identified by j.JobID.

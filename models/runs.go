@@ -18,7 +18,7 @@ func (c *Client) GetRuns() ([]Run, error) {
 
 	rows, err := c.DB.Query(s)
 	if err != nil {
-		return []Run{}, ErrQueryFailed
+		return []Run{}, err
 	}
 	defer rows.Close()
 
@@ -30,7 +30,7 @@ func (c *Client) GetRuns() ([]Run, error) {
 			&run.JobID,
 			&run.Status)
 		if err != nil {
-			return []Run{}, ErrScan
+			return []Run{}, err
 		}
 		runs = append(runs, run)
 	}

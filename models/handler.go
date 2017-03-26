@@ -19,17 +19,17 @@ const (
 type Handler interface {
 	// Volumes
 	GetVolumes() ([]Volume, error)
-	InsertVolume(v Volume) error
+	InsertVolume(v Volume) (int64, error)
 	UpdateVolume(v Volume) error
 
 	// Servers
 	GetServers() ([]Server, error)
-	InsertServer(s Server) error
+	InsertServer(s Server) (int64, error)
 	UpdateServer(s Server) error
 
 	// Jobs
 	GetJobs() ([]Job, error)
-	InsertJob(j Job) error
+	InsertJob(j Job) (int64, error)
 	UpdateJob(j Job) error
 
 	// RunHistory

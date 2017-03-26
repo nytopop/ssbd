@@ -47,9 +47,51 @@ func main() {
 	}
 	defer db.Close()
 
+	// *************** MOCK
+	mv := models.Volume{
+		Name:    "./run/bak",
+		Backend: models.FileDir,
+	}
+	vid, _ := db.InsertVolume(mv)
+
+	ms := models.Server{
+		Name:    "mockserver",
+		Proto:   models.SrvSSH,
+		Address: []byte{byte(172), byte(18), byte(9), byte(241)},
+		Port:    22,
+	}
+	sid, _ := db.InsertServer(ms)
+
+	mj := models.Job{
+		ServerID:  sid,
+		VolumeID:  vid,
+		Cron:      "@every 1s",
+		Style:     models.Full,
+		Directory: "/home/eric/doc/org",
+	}
+	db.InsertJob(mj)
+
+	mj = models.Job{
+		ServerID:  sid,
+		VolumeID:  vid,
+		Cron:      "@every 2s",
+		Style:     models.Full,
+		Directory: "/home/eric/doc/notes",
+	}
+	db.InsertJob(mj)
+
+	mj = models.Job{
+		ServerID:  sid,
+		VolumeID:  vid,
+		Cron:      "@every 4s",
+		Style:     models.Full,
+		Directory: "/home/eric/dotfiles",
+	}
+	db.InsertJob(mj)
+	// ****************** MOCK
+
 	// Start job scheduler
 	s := data.NewScheduler(db)
-	go s.Run()
 	defer s.Close()
 
 	/****************************/

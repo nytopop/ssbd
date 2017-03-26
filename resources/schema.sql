@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS servers (
                      UNIQUE,
     name     TEXT    NOT NULL
                      UNIQUE,
+    proto    INTEGER NOT NULL,
     address  TEXT    NOT NULL,
     port     INTEGER NOT NULL
 );

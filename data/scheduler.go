@@ -2,10 +2,14 @@ package data
 
 import (
 	"fmt"
+	"log"
+	"runtime"
 	"sync"
 
 	"github.com/nytopop/ssbd/logs"
 	"github.com/nytopop/ssbd/models"
+	"github.com/nytopop/ssbd/srv"
+	"github.com/nytopop/ssbd/vol"
 	"github.com/robfig/cron"
 )
 
@@ -17,12 +21,23 @@ const (
 	EvtRescanVols = iota
 	EvtRescanSrvs
 	EvtRescanJobs
+	EvtVerify
 )
+
+/* TODO
+handle EvtVerify
+get server handlers working + rescan
+get volume handlers working + rescan
+
+need data input, frontend forms, etc
+
+fix the locks, they need to lock until done with handler
+*/
 
 type Scheduler struct {
 	// scheduling
+	dlock sync.Mutex
 	db    models.Handler
-	wg    sync.WaitGroup
 	clock sync.RWMutex
 	cron  *cron.Cron
 
@@ -33,39 +48,50 @@ type Scheduler struct {
 
 	// volume management
 	vlock sync.RWMutex
-	vols  map[int64]VolumeHandler
+	vols  map[int64]vol.Handler
 
 	// server management
 	slock sync.RWMutex
-	srvs  map[int64]ServerHandler
+	srvs  map[int64]srv.Handler
 }
 
 func NewScheduler(db models.Handler) *Scheduler {
-	return &Scheduler{
+	s := &Scheduler{
 		db:   db,
 		cron: cron.New(),
 		jobs: make(chan models.Job),
 		evts: make(chan int),
 		errs: make(chan error),
-		vols: make(map[int64]VolumeHandler),
-		srvs: make(map[int64]ServerHandler),
+		vols: make(map[int64]vol.Handler),
+		srvs: make(map[int64]srv.Handler),
 	}
+
+	go s.Run()
+
+	s.ScanVols()
+	s.ScanSrvs()
+	s.ScanJobs()
+
+	return s
 }
 
 // keeps track of all helper goroutines. Will block.
 func (s *Scheduler) Run() {
-	// spinner on s.jobs
-	go func() {
-		for j := range s.jobs {
-			// do we do this in a goroutine?
-			s.RunJob(j)
-		}
-	}()
+	n := runtime.NumCPU()
+
+	// spawn n spinners on s.jobs
+	for i := 0; i < n; i++ {
+		go func(x int) {
+			for j := range s.jobs {
+				fmt.Println("Job", j, "arrived on", x)
+				s.RunJob(j)
+			}
+		}(i)
+	}
 
 	// spinner on s.evts
 	go func() {
 		for e := range s.evts {
-			fmt.Println(e)
 			switch e {
 			case EvtRescanVols:
 				s.ScanVols()
@@ -73,6 +99,9 @@ func (s *Scheduler) Run() {
 				s.ScanSrvs()
 			case EvtRescanJobs:
 				s.ScanJobs()
+			case EvtVerify:
+				// go through list of backups, verify them all
+				// get all runs with
 			}
 		}
 	}()
@@ -80,61 +109,78 @@ func (s *Scheduler) Run() {
 	// spinner on s.errs
 	go func() {
 		for err := range s.errs {
+			log.Fatalln(err)
 			logs.Error(err)
 		}
 	}()
 }
 
 func (s *Scheduler) RunJob(j models.Job) {
-	// check volume is available,
+	// Setup locks
 	s.vlock.RLock()
-	if _, ok := s.vols[j.VolumeID]; !ok {
-		s.vlock.RUnlock()
-		s.errs <- ErrNoVol
-		return
-	}
-	vol := s.vols[j.VolumeID]
-	s.vlock.RUnlock()
-
-	// check server is available,
 	s.slock.RLock()
-	if _, ok := s.srvs[j.ServerID]; !ok {
-		s.slock.RUnlock()
-		s.errs <- ErrNoSrv
-		return
-	}
-	srv := s.srvs[j.ServerID]
-	s.slock.RUnlock()
+	defer s.vlock.RUnlock()
+	defer s.slock.RUnlock()
 
+	// get the current run's id & set status waiting
 	r := models.Run{
 		JobID:  j.JobID,
 		Status: models.StatusWait,
 	}
+	s.dlock.Lock()
 	rid, err := s.db.InsertRun(r)
+	s.dlock.Unlock()
 	if err != nil {
-		s.errs <- ErrDB
+		s.errs <- err
 		return
 	}
+	r.RunID = rid
+	r.Status = models.StatusFail
+
+	// we defer updating job status
+	// so good/fail are correct
+	defer func(tr *models.Run) {
+		s.dlock.Lock()
+		err := s.db.UpdateRun(*tr)
+		if err != nil {
+			s.errs <- err
+		}
+		s.dlock.Unlock()
+	}(&r)
+
+	// check volume is available,
+	if _, ok := s.vols[j.VolumeID]; !ok {
+		s.errs <- ErrNoVol
+		return
+	}
+	vlm := s.vols[j.VolumeID]
+
+	// check server is available,
+	if _, ok := s.srvs[j.ServerID]; !ok {
+		s.errs <- ErrNoSrv
+		return
+	}
+	serv := s.srvs[j.ServerID]
 
 	switch j.Style {
 	case models.Full:
 		// get tar,idx writers for 'runid' : tar,idx
-		tar, err := vol.GetW(rid, Tar)
+		tar, err := vlm.GetW(rid, vol.Tar)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 		defer tar.Close()
 
-		idx, err := vol.GetW(rid, Idx)
+		idx, err := vlm.GetW(rid, vol.Idx)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 		defer idx.Close()
 
-		// srv . GetFullTar ( tar, idx )
-		err = srv.GetFullTar(tar, idx)
+		// serv . GetFullTar ( tar, idx )
+		err = serv.GetFullTar(j.Directory, tar, idx)
 		if err != nil {
 			s.errs <- err
 			return
@@ -149,82 +195,126 @@ func (s *Scheduler) RunJob(j models.Job) {
 			return
 		}
 
-		fidx, err := vol.GetR(fid, Idx)
+		fidx, err := vlm.GetR(fid, vol.Idx)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 		defer fidx.Close()
 
-		tar, err := vol.GetW(rid, Tar)
+		tar, err := vlm.GetW(rid, vol.Tar)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 		defer tar.Close()
 
-		idx, err := vol.GetW(rid, Idx)
+		idx, err := vlm.GetW(rid, vol.Idx)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 		defer idx.Close()
 
-		err = srv.GetDiffTar(fidx, tar, idx)
+		err = serv.GetDiffTar(fidx, tar, idx)
 		if err != nil {
 			s.errs <- err
 			return
 		}
 	}
 
-	// cleanup the run, set status to StatusGood
-	// update run in db
+	// set status to StatusGood before returning
+	// deferred update will use the new value because
+	// r referenced by pointer
+	r.Status = models.StatusGood
 }
 
 // vlock, vols
 func (s *Scheduler) ScanVols() {
+	s.vlock.Lock()
+	defer s.vlock.Unlock()
+
 	vols, err := s.db.GetVolumes()
 	if err != nil {
 		s.errs <- err
 		return
 	}
 
-	vols = make([]models.Volume, 1)
-
-	nvols := make(map[int64]VolumeHandler)
+	nvols := make(map[int64]vol.Handler)
 	for i := range vols {
+		switch vols[i].Backend {
 		// if this is a good volume
-		f, err := OpenFileDir("./run/bak")
-		if err != nil {
-			s.errs <- err
-		} else {
-			nvols[vols[i].VolumeID] = f
+		case models.FileDir:
+			f, err := vol.OpenFileDir("./run/bak")
+			if err != nil {
+				s.errs <- err
+			} else {
+				nvols[vols[i].VolumeID] = f
+			}
 		}
 	}
 
-	s.vlock.Lock()
+	for k := range s.vols {
+		s.vols[k].Close()
+	}
 	s.vols = nvols
-	s.vlock.Unlock()
 }
 
 // slock, srvs
 func (s *Scheduler) ScanSrvs() {
+	s.slock.Lock()
+	defer s.slock.Unlock()
+
+	srvs, err := s.db.GetServers()
+	if err != nil {
+		s.errs <- err
+		return
+	}
+
+	nsrvs := make(map[int64]srv.Handler)
+	for i := range srvs {
+		switch srvs[i].Proto {
+		case models.SrvSSH:
+			h, err := srv.DialSSH(srvs[i].Address, srvs[i].Port)
+			if err != nil {
+				s.errs <- err
+			} else {
+				nsrvs[srvs[i].ServerID] = h
+			}
+			// attempt to ssh connect
+			// spawn an SSH Srv handler
+			// pop into
+			// use a default private key for now, to make things simple
+		case models.SrvFTP:
+		case models.SrvHTTP:
+		case models.SrvSSBD:
+		default:
+			// unknown
+		}
+	}
+
+	for k := range s.srvs {
+		s.srvs[k].Close()
+	}
+	s.srvs = nsrvs
 }
 
 // clock, cron
 func (s *Scheduler) ScanJobs() {
+	s.clock.Lock()
+	defer s.clock.Unlock()
+
 	jobs, err := s.db.GetJobs()
 	if err != nil {
 		s.errs <- err
 		return
 	}
-	jobs = make([]models.Job, 1)
 
 	c := cron.New()
-
 	for i := range jobs {
-		err := c.AddFunc("@every 8s", func() {
-			s.jobs <- jobs[i]
+		var k = i
+		err := c.AddFunc(jobs[k].Cron, func() {
+			s.jobs <- jobs[k]
 		})
 
 		if err != nil {
@@ -232,12 +322,25 @@ func (s *Scheduler) ScanJobs() {
 		}
 	}
 
+	err = c.AddFunc("@every 60s", func() {
+		fmt.Println("Rescan event")
+		s.evts <- EvtRescanVols
+		s.evts <- EvtRescanSrvs
+		s.evts <- EvtRescanJobs
+	})
+	if err != nil {
+		s.errs <- err
+	}
+
 	s.cron.Stop()
-	s.clock.Lock()
 	s.cron = c
-	s.clock.Unlock()
 	s.cron.Start()
 }
 
 func (s *Scheduler) Close() {
+	// Cleanup
+
+	// finish all pending backups
+	// release all server handlers
+	// release all volume handlers
 }
